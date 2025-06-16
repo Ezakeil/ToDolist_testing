@@ -8,10 +8,10 @@ RUN apt-get update && apt-get install -y wget curl unzip gnupg \
     && rm -rf /var/lib/apt/lists/*
 
 # Install matching ChromeDriver manually
-RUN wget -O /tmp/chromedriver.zip https://chromedriver.storage.googleapis.com/124.0.6367.91/chromedriver_linux64.zip \
+RUN wget -O /tmp/chromedriver.zip https://chromedriver.storage.googleapis.com/124.0.6367.0/chromedriver_linux64.zip \
     && unzip /tmp/chromedriver.zip -d /usr/local/bin/ \
     && rm /tmp/chromedriver.zip
-
+    
 # Install Selenium
 RUN pip install selenium
 
