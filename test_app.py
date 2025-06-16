@@ -13,7 +13,7 @@ class TaskManagerTest(unittest.TestCase):
         options.add_argument("--disable-dev-shm-usage")
 
         self.driver = webdriver.Chrome(options=options)  # ✅ Local WebDriver
-        self.driver.get("http://<YOUR_EC2_PUBLIC_IP>:5000")  # Replace with your actual EC2 public IP or DNS
+        self.driver.get("http://54.152.120.95:9090/")  # Replace with your actual EC2 public IP or DNS
 
     def tearDown(self):
         self.driver.quit()
