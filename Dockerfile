@@ -1,11 +1,11 @@
-FROM seleniarm/standalone-chromium:latest
+FROM selenium/standalone-chrome:latest
 
 USER root
 
-RUN pip install selenium
+RUN apt-get update && apt-get install -y python3 python3-pip \
+    && pip3 install selenium
 
 WORKDIR /tests
-
 COPY . /tests
 
-CMD ["python", "test_app.py"]
+CMD ["python3", "test_app.py"]
