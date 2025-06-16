@@ -1,11 +1,12 @@
-FROM selenium/standalone-chrome:124.0
+FROM python:3.11-slim
 
-USER root
+# Install dependencies
+RUN apt-get update && apt-get install -y wget curl unzip gnupg chromium chromium-driver
 
-RUN apt-get update && apt-get install -y python3 python3-pip \
-    && pip3 install selenium
+# Install Selenium
+RUN pip install selenium
 
 WORKDIR /tests
 COPY . /tests
 
-CMD ["python3", "test_app.py"]
+CMD ["python", "test_app.py"]

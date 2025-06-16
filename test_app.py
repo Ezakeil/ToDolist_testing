@@ -8,16 +8,12 @@ class TaskManagerTest(unittest.TestCase):
 
     def setUp(self):
         options = Options()
-        options.add_argument("--headless")
+        options.add_argument("--headless")  # run without opening a browser window
         options.add_argument("--no-sandbox")
         options.add_argument("--disable-dev-shm-usage")
 
-        # Use Remote WebDriver correctly (no desired_capabilities)
-        self.driver = webdriver.Remote(
-            command_executor='http://localhost:4444/wd/hub',
-            options=options
-        )
-        self.driver.get("http://54.152.120.95:9090/")  # Replace this with your EC2 IP
+        self.driver = webdriver.Chrome(options=options)  # ✅ Local WebDriver
+        self.driver.get("http://<YOUR_EC2_PUBLIC_IP>:5000")  # Replace with your actual EC2 public IP or DNS
 
     def tearDown(self):
         self.driver.quit()
