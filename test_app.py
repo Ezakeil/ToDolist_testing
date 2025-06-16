@@ -1,24 +1,28 @@
 import unittest
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+from selenium.webdriver.chrome.options import Options
 import time
 
 class TaskManagerTest(unittest.TestCase):
 
     def setUp(self):
-        # Using Selenium Remote WebDriver (because you are using selenium/standalone-chrome)
+        options = Options()
+        options.add_argument("--headless")
+        options.add_argument("--no-sandbox")
+        options.add_argument("--disable-dev-shm-usage")
+
+        # Use Remote WebDriver correctly (no desired_capabilities)
         self.driver = webdriver.Remote(
             command_executor='http://localhost:4444/wd/hub',
-            desired_capabilities=DesiredCapabilities.CHROME
+            options=options
         )
-        self.driver.get("http://54.152.120.95:9090/")  # Replace with your actual EC2 URL
+        self.driver.get("http://54.152.120.95:9090/")  # Replace this with your EC2 IP
 
     def tearDown(self):
         self.driver.quit()
 
     def delete_all_tasks(self):
-        # Helper function to clear all existing tasks before running a test
         while True:
             delete_links = self.driver.find_elements(By.CLASS_NAME, "delete")
             if not delete_links:
@@ -30,7 +34,7 @@ class TaskManagerTest(unittest.TestCase):
         self.assertIn("Task Manager", self.driver.title)
 
     def test_add_task(self):
-        self.delete_all_tasks()  # Ensure clean state
+        self.delete_all_tasks()
         input_box = self.driver.find_element(By.NAME, "title")
         input_box.send_keys("Test Task 1")
         input_box.submit()
@@ -38,7 +42,7 @@ class TaskManagerTest(unittest.TestCase):
         self.assertIn("Test Task 1", self.driver.page_source)
 
     def test_add_multiple_tasks(self):
-        self.delete_all_tasks()  # Ensure clean state
+        self.delete_all_tasks()
         for i in range(3):
             input_box = self.driver.find_element(By.NAME, "title")
             input_box.send_keys(f"Task {i}")
@@ -50,7 +54,7 @@ class TaskManagerTest(unittest.TestCase):
         self.assertIn("Task 2", page_text)
 
     def test_complete_task(self):
-        self.delete_all_tasks()  # Ensure clean state
+        self.delete_all_tasks()
         self.test_add_task()
         toggle_link = self.driver.find_element(By.CLASS_NAME, "toggle")
         toggle_link.click()
@@ -58,7 +62,7 @@ class TaskManagerTest(unittest.TestCase):
         self.assertIn("Done", self.driver.page_source)
 
     def test_toggle_task(self):
-        self.delete_all_tasks()  # Ensure clean state
+        self.delete_all_tasks()
         self.test_add_task()
         toggle_link = self.driver.find_element(By.CLASS_NAME, "toggle")
         toggle_link.click()
@@ -69,7 +73,7 @@ class TaskManagerTest(unittest.TestCase):
         self.assertIn("Pending", self.driver.page_source)
 
     def test_delete_task(self):
-        self.delete_all_tasks()  # Ensure clean state
+        self.delete_all_tasks()
         self.test_add_task()
         delete_link = self.driver.find_element(By.CLASS_NAME, "delete")
         delete_link.click()
@@ -77,12 +81,12 @@ class TaskManagerTest(unittest.TestCase):
         self.assertNotIn("Test Task 1", self.driver.page_source)
 
     def test_empty_list(self):
-        self.delete_all_tasks()  # Ensure clean state
+        self.delete_all_tasks()
         tasks = self.driver.find_elements(By.CLASS_NAME, "task-list")
         self.assertIsNotNone(tasks)
 
     def test_add_empty_task(self):
-        self.delete_all_tasks()  # Ensure clean state
+        self.delete_all_tasks()
         input_box = self.driver.find_element(By.NAME, "title")
         input_box.send_keys("")
         input_box.submit()
