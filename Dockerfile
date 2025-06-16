@@ -1,19 +1,11 @@
-FROM python:3.11-slim
+FROM selenium/standalone-chrome:124.0
 
-RUN apt-get update && apt-get install -y wget curl unzip gnupg \
-    && wget https://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/google-chrome-stable_124.0.6367.119-1_amd64.deb \
-    && apt install -y ./google-chrome-stable_124.0.6367.119-1_amd64.deb \
-    && rm google-chrome-stable_124.0.6367.119-1_amd64.deb \
-    && rm -rf /var/lib/apt/lists/*
+USER root
 
-# Install ChromeDriver 124 (this version 100% exists!)
-RUN wget -O /tmp/chromedriver.zip https://chromedriver.storage.googleapis.com/124.0.6367.73/chromedriver_linux64.zip \
-    && unzip /tmp/chromedriver.zip -d /usr/local/bin/ \
-    && rm /tmp/chromedriver.zip
-
-RUN pip install selenium
+RUN apt-get update && apt-get install -y python3 python3-pip \
+    && pip3 install selenium
 
 WORKDIR /tests
 COPY . /tests
 
-CMD ["python", "test_app.py"]
+CMD ["python3", "test_app.py"]
