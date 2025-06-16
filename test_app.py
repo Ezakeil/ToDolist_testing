@@ -1,18 +1,23 @@
 import unittest
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 import time
 
 class TaskManagerTest(unittest.TestCase):
 
     def setUp(self):
-        chrome_options = Options()
-        chrome_options.add_argument("--headless")  # Run in headless mode
-        chrome_options.add_argument("--no-sandbox")
-        chrome_options.add_argument("--disable-dev-shm-usage")
-        self.driver = webdriver.Chrome(options=chrome_options)
-        self.driver.get("http://54.152.120.95:9090/")  # CHANGE this to your EC2 app URL if needed
+        options = Options()
+        options.add_argument('--headless')  # Run in headless mode (for Jenkins/EC2)
+        options.add_argument('--no-sandbox')
+        options.add_argument('--disable-dev-shm-usage')
+
+        # Specify ChromeDriver path inside selenium/standalone-chrome Docker container
+        service = Service("/opt/selenium/chromedriver")
+
+        self.driver = webdriver.Chrome(service=service, options=options)
+        self.driver.get("http://54.152.120.95:9090/")  # Replace with your actual EC2 public IP
 
     def tearDown(self):
         self.driver.quit()
